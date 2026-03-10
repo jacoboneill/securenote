@@ -9,18 +9,35 @@ import (
 	"context"
 )
 
-const getUser = `-- name: GetUser :one
-SELECT id, email, password_hash, created_at FROM users WHERE id = ? LIMIT 1
+const createUser = `-- name: CreateUser :one
+INSERT INTO users (email, password_hash) VALUES(?, ?) RETURNING id
 `
 
-func (q *Queries) GetUser(ctx context.Context, id int64) (User, error) {
-	row := q.db.QueryRowContext(ctx, getUser, id)
+type CreateUserParams struct {
+	Email        string
+	PasswordHash string
+}
+
+func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (int64, error) {
+	row := q.db.QueryRowContext(ctx, createUser, arg.Email, arg.PasswordHash)
+	var id int64
+	err := row.Scan(&id)
+	return id, err
+}
+
+const getUserByEmail = `-- name: GetUserByEmail :one
+SELECT id, email, password_hash, created_at, updated_at FROM users WHERE email = ? LIMIT 1
+`
+
+func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error) {
+	row := q.db.QueryRowContext(ctx, getUserByEmail, email)
 	var i User
 	err := row.Scan(
 		&i.ID,
 		&i.Email,
 		&i.PasswordHash,
 		&i.CreatedAt,
+		&i.UpdatedAt,
 	)
 	return i, err
 }
