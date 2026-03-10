@@ -8,9 +8,28 @@ import (
 	"database/sql"
 )
 
+type Paste struct {
+	ID        string
+	UserID    sql.NullInt64
+	Title     sql.NullString
+	Content   string
+	IsPublic  sql.NullBool
+	ExpiresAt sql.NullTime
+	CreatedAt sql.NullTime
+	UpdatedAt sql.NullTime
+}
+
+type SharedPaste struct {
+	ID         int64
+	PasteID    sql.NullString
+	SharedWith sql.NullInt64
+	Permission sql.NullString
+}
+
 type User struct {
 	ID           int64
 	Email        string
 	PasswordHash string
 	CreatedAt    sql.NullTime
+	UpdatedAt    sql.NullTime
 }
