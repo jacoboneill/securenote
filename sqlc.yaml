@@ -1,6 +1,7 @@
+---
 version: "2"
 sql:
-  - schema: "sql/schemas"
+  - schema: "migrations"
     queries: "sql/queries"
     engine: "sqlite"
     gen:

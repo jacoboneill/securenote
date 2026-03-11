@@ -1,0 +1,3 @@
+DROP TABLE IF EXISTS shared_pastes;
+DROP TABLE IF EXISTS pastes;
+DROP TABLE IF EXISTS users;
