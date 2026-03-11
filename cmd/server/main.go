@@ -21,8 +21,7 @@ func logging(next http.Handler) http.Handler {
 }
 
 func initDB(dataSourceName string) (*sql.DB, error) {
-	conn, err := sql.Open("sqlite", dataSourceName)
-	return conn, err
+	return sql.Open("sqlite", dataSourceName)
 }
 
 func runMigrations(conn *sql.DB, sourceURL string) error {
@@ -57,6 +56,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	log.Println("database connection secured")
 	defer func() {
 		if err := conn.Close(); err != nil {
 			log.Fatalf("error closing db: %q", err)
@@ -68,8 +68,10 @@ func main() {
 	if err := runMigrations(conn, "file://migrations"); err != nil {
 		log.Fatal(err)
 	}
+	log.Println("migrations applied")
 
 	mux := initMux(queries)
+	log.Println("handlers registered")
 
 	// Start Server
 	const addr = ":8080"
